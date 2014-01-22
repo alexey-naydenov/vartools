@@ -153,6 +153,7 @@ doctest:
 	@echo "Testing of doctests in the sources finished, look at the " \
 	      "results in $(BUILDDIR)/doctest/output.txt."
 
+.PHONY: apidocs
 apidocs:
 	@echo "Building apidocs ..."
 	$(SPHINXAPIDOC) -f -o source -H VarTools ../vartools
