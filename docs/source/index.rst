@@ -5,6 +5,8 @@
 
 Welcome to VarTools's documentation!
 ====================================
+.. include:: ../../README.rst
+
 
 Contents:
 
