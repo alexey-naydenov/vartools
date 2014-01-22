@@ -1,0 +1,174 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>vartools.traceconverter &mdash; VarTools 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="VarTools 0.1.0 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">VarTools 0.1.0 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for vartools.traceconverter</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/env python3</span>
+
+<span class="kn">import</span> <span class="nn">argparse</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pprint</span>
+
+<span class="kn">from</span> <span class="nn">vartools.parser.enumparser</span> <span class="kn">import</span> <span class="n">EnumParser</span>
+<span class="kn">from</span> <span class="nn">vartools.parser.utils</span> <span class="kn">import</span> <span class="n">clean_enums</span><span class="p">,</span> <span class="n">MESSAGE_CATEGORY_ID</span><span class="p">,</span> \
+    <span class="n">TYPE_CATEGORY_ID</span><span class="p">,</span> <span class="n">EVENT_CATEGORY_ID</span>
+<span class="kn">from</span> <span class="nn">vartools.fileutils</span> <span class="kn">import</span> <span class="n">file_or_stdin</span><span class="p">,</span> <span class="n">file_or_stdout</span>
+<span class="kn">from</span> <span class="nn">vartools.tracereader</span> <span class="kn">import</span> <span class="n">TraceReader</span>
+<span class="kn">from</span> <span class="nn">vartools.messageutils</span> <span class="kn">import</span> <span class="n">message_to_text</span><span class="p">,</span> <span class="n">message_to_clojure</span>
+
+
+<span class="n">_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+<span class="n">_VERBOSITY_LOGLEVEL_DICT</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">ERROR</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">WARN</span><span class="p">,</span>
+                            <span class="mi">2</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span> <span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">}</span>
+
+<div class="viewcode-block" id="create_argument_parser"><a class="viewcode-back" href="../../vartools.html#vartools.traceconverter.create_argument_parser">[docs]</a><span class="k">def</span> <span class="nf">create_argument_parser</span><span class="p">():</span>
+    <span class="n">argument_parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">()</span>
+    <span class="c"># input and output parameters</span>
+    <span class="n">argument_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s">&#39;-i&#39;</span><span class="p">,</span> <span class="s">&#39;--input&#39;</span><span class="p">,</span>
+                                 <span class="n">help</span><span class="o">=</span><span class="p">(</span><span class="s">&#39;input file name, if not specified &#39;</span>
+                                       <span class="s">&#39;use stdin&#39;</span><span class="p">))</span>
+    <span class="n">argument_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s">&#39;-o&#39;</span><span class="p">,</span> <span class="s">&#39;--output&#39;</span><span class="p">,</span>
+                                 <span class="n">help</span><span class="o">=</span><span class="p">(</span><span class="s">&#39;output file name, if not specified &#39;</span>
+                                       <span class="s">&#39;use stdout&#39;</span><span class="p">))</span>
+    <span class="n">argument_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s">&#39;-c&#39;</span><span class="p">,</span> <span class="s">&#39;--cpp-header&#39;</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="s">&#39;+&#39;</span><span class="p">,</span>
+                                 <span class="n">help</span><span class="o">=</span><span class="p">(</span><span class="s">&#39;c++ header file names that describe &#39;</span>
+                                       <span class="s">&#39;trace ids&#39;</span><span class="p">))</span>
+    <span class="n">argument_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s">&#39;--clojure&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s">&#39;count&#39;</span><span class="p">,</span>
+                                 <span class="n">help</span><span class="o">=</span><span class="p">(</span><span class="s">&#39;convert trace to clojure&#39;</span><span class="p">))</span>
+    <span class="c"># verbosity level</span>
+    <span class="n">argument_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s">&quot;-v&quot;</span><span class="p">,</span> <span class="s">&quot;--verbosity&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s">&quot;count&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                                 <span class="n">help</span><span class="o">=</span><span class="s">&quot;increase output verbosity&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">argument_parser</span>
+</div>
+<div class="viewcode-block" id="parse_cpp_headers"><a class="viewcode-back" href="../../vartools.html#vartools.traceconverter.parse_cpp_headers">[docs]</a><span class="k">def</span> <span class="nf">parse_cpp_headers</span><span class="p">(</span><span class="n">arguments</span><span class="p">):</span>
+    <span class="n">enum_parser</span> <span class="o">=</span> <span class="n">EnumParser</span><span class="p">()</span>
+    <span class="n">message_ids</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">type_ids</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">event_ids</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">header</span> <span class="ow">in</span> <span class="n">arguments</span><span class="o">.</span><span class="n">cpp_header</span><span class="p">:</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;Parsing cpp header: {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">header</span><span class="p">))</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">header_file</span><span class="p">:</span>
+            <span class="n">code</span> <span class="o">=</span> <span class="n">header_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+            <span class="n">extracted_enums</span> <span class="o">=</span> <span class="n">clean_enums</span><span class="p">(</span><span class="n">enum_parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">code</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">enum</span> <span class="ow">in</span> <span class="n">extracted_enums</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">enum</span><span class="o">.</span><span class="n">category</span> <span class="o">==</span> <span class="n">MESSAGE_CATEGORY_ID</span><span class="p">:</span>
+                    <span class="n">message_ids</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">members</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">enum</span><span class="o">.</span><span class="n">category</span> <span class="o">==</span> <span class="n">TYPE_CATEGORY_ID</span><span class="p">:</span>
+                    <span class="n">type_ids</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">members</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">enum</span><span class="o">.</span><span class="n">category</span> <span class="o">==</span> <span class="n">EVENT_CATEGORY_ID</span><span class="p">:</span>
+                    <span class="n">event_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">enum</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">message_ids</span><span class="p">,</span> <span class="n">type_ids</span><span class="p">,</span> <span class="n">event_ids</span>
+</div>
+<div class="viewcode-block" id="convert_vartrace"><a class="viewcode-back" href="../../vartools.html#vartools.traceconverter.convert_vartrace">[docs]</a><span class="k">def</span> <span class="nf">convert_vartrace</span><span class="p">():</span>
+    <span class="c"># get command line arguments</span>
+    <span class="n">argument_parser</span> <span class="o">=</span> <span class="n">create_argument_parser</span><span class="p">()</span>
+    <span class="n">arguments</span> <span class="o">=</span> <span class="n">argument_parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+    <span class="c"># change log level according to verbosity</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span>
+        <span class="n">level</span><span class="o">=</span><span class="n">_VERBOSITY_LOGLEVEL_DICT</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">arguments</span><span class="o">.</span><span class="n">verbosity</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+    <span class="c"># choose converter</span>
+    <span class="k">if</span> <span class="n">arguments</span><span class="o">.</span><span class="n">clojure</span><span class="p">:</span>
+        <span class="n">converter</span> <span class="o">=</span> <span class="n">message_to_clojure</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">converter</span> <span class="o">=</span> <span class="n">message_to_text</span>
+    <span class="c"># parse c++ headers and get all enum descriptions</span>
+    <span class="n">message_ids</span><span class="p">,</span> <span class="n">type_ids</span><span class="p">,</span> <span class="n">event_ids</span> <span class="o">=</span> <span class="n">parse_cpp_headers</span><span class="p">(</span><span class="n">arguments</span><span class="p">)</span>
+    <span class="c"># open input and output streams</span>
+    <span class="k">with</span> <span class="n">file_or_stdin</span><span class="p">(</span><span class="n">arguments</span><span class="o">.</span><span class="n">input</span><span class="p">,</span> <span class="s">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">input_stream</span><span class="p">,</span> \
+         <span class="n">file_or_stdout</span><span class="p">(</span><span class="n">arguments</span><span class="o">.</span><span class="n">output</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">output_stream</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">TraceReader</span><span class="p">(</span><span class="n">input_stream</span><span class="p">):</span>
+            <span class="n">output_stream</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">converter</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">message_ids</span><span class="p">,</span> 
+                                          <span class="n">type_ids</span><span class="p">,</span> <span class="n">event_ids</span><span class="p">))</span>
+            <span class="n">output_stream</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+</div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="k">pass</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">VarTools 0.1.0 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Alexey Naydenov.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

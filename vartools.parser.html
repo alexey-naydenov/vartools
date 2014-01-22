@@ -1,0 +1,457 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>parser Package &mdash; VarTools 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="VarTools 0.1.0 documentation" href="index.html" />
+    <link rel="up" title="vartools Package" href="vartools.html" />
+    <link rel="next" title="test Package" href="vartools.parser.test.html" />
+    <link rel="prev" title="vartools Package" href="vartools.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="vartools.parser.test.html" title="test Package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="vartools.html" title="vartools Package"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">VarTools 0.1.0 documentation</a> &raquo;</li>
+          <li><a href="modules.html" >VarTools</a> &raquo;</li>
+          <li><a href="vartools.html" accesskey="U">vartools Package</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="parser-package">
+<h1>parser Package<a class="headerlink" href="#parser-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-vartools.parser.enumlexer">
+<span id="enumlexer-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">enumlexer</span></tt> Module<a class="headerlink" href="#module-vartools.parser.enumlexer" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="vartools.parser.enumlexer.EnumLexer">
+<em class="property">class </em><tt class="descclassname">vartools.parser.enumlexer.</tt><tt class="descname">EnumLexer</tt><a class="reference internal" href="_modules/vartools/parser/enumlexer.html#EnumLexer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vartools.parser.enumlexer.EnumLexer" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="vartools.parser.enumlexer.EnumLexer.build">
+<tt class="descname">build</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/vartools/parser/enumlexer.html#EnumLexer.build"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vartools.parser.enumlexer.EnumLexer.build" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="vartools.parser.enumlexer.EnumLexer.reserved">
+<tt class="descname">reserved</tt><em class="property"> = {'enum': 'ENUM', 'namespace': 'NAMESPACE'}</em><a class="headerlink" href="#vartools.parser.enumlexer.EnumLexer.reserved" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="vartools.parser.enumlexer.EnumLexer.states">
+<tt class="descname">states</tt><em class="property"> = (('comment', 'exclusive'),)</em><a class="headerlink" href="#vartools.parser.enumlexer.EnumLexer.states" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vartools.parser.enumlexer.EnumLexer.t_ANY_error">
+<tt class="descname">t_ANY_error</tt><big>(</big><em>token</em><big>)</big><a class="reference internal" href="_modules/vartools/parser/enumlexer.html#EnumLexer.t_ANY_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vartools.parser.enumlexer.EnumLexer.t_ANY_error" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="vartools.parser.enumlexer.EnumLexer.t_ANY_ignore">
+<tt class="descname">t_ANY_ignore</tt><em class="property"> = ' \t\n'</em><a class="headerlink" href="#vartools.parser.enumlexer.EnumLexer.t_ANY_ignore" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="vartools.parser.enumlexer.EnumLexer.t_ASSIGN">
+<tt class="descname">t_ASSIGN</tt><em class="property"> = '='</em><a class="headerlink" href="#vartools.parser.enumlexer.EnumLexer.t_ASSIGN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="vartools.parser.enumlexer.EnumLexer.t_CLOSE_CURLY">
+<tt class="descname">t_CLOSE_CURLY</tt><em class="property"> = '}'</em><a class="headerlink" href="#vartools.parser.enumlexer.EnumLexer.t_CLOSE_CURLY" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="vartools.parser.enumlexer.EnumLexer.t_CLOSE_PAREN">
+<tt class="descname">t_CLOSE_PAREN</tt><em class="property"> = '\\)'</em><a class="headerlink" href="#vartools.parser.enumlexer.EnumLexer.t_CLOSE_PAREN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="vartools.parser.enumlexer.EnumLexer.t_COMMA">
+<tt class="descname">t_COMMA</tt><em class="property"> = ','</em><a class="headerlink" href="#vartools.parser.enumlexer.EnumLexer.t_COMMA" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vartools.parser.enumlexer.EnumLexer.t_HEX_INTEGER">
+<tt class="descname">t_HEX_INTEGER</tt><big>(</big><em>token</em><big>)</big><a class="reference internal" href="_modules/vartools/parser/enumlexer.html#EnumLexer.t_HEX_INTEGER"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vartools.parser.enumlexer.EnumLexer.t_HEX_INTEGER" title="Permalink to this definition">¶</a></dt>
+<dd><p>0x[0-9a-f]+</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vartools.parser.enumlexer.EnumLexer.t_ID">
+<tt class="descname">t_ID</tt><big>(</big><em>token</em><big>)</big><a class="reference internal" href="_modules/vartools/parser/enumlexer.html#EnumLexer.t_ID"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vartools.parser.enumlexer.EnumLexer.t_ID" title="Permalink to this definition">¶</a></dt>
+<dd><p>[<a href="#id1"><span class="problematic" id="id2">a-zA-Z_</span></a>][a-zA-Z_0-9]*</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vartools.parser.enumlexer.EnumLexer.t_INTEGER">
+<tt class="descname">t_INTEGER</tt><big>(</big><em>token</em><big>)</big><a class="reference internal" href="_modules/vartools/parser/enumlexer.html#EnumLexer.t_INTEGER"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vartools.parser.enumlexer.EnumLexer.t_INTEGER" title="Permalink to this definition">¶</a></dt>
+<dd><p>[0-9]+</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vartools.parser.enumlexer.EnumLexer.t_LINE_COMMENT">
+<tt class="descname">t_LINE_COMMENT</tt><big>(</big><em>token</em><big>)</big><a class="reference internal" href="_modules/vartools/parser/enumlexer.html#EnumLexer.t_LINE_COMMENT"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vartools.parser.enumlexer.EnumLexer.t_LINE_COMMENT" title="Permalink to this definition">¶</a></dt>
+<dd><p>//[*! ]*(.*)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vartools.parser.enumlexer.EnumLexer.t_MACROS">
+<tt class="descname">t_MACROS</tt><big>(</big><em>token</em><big>)</big><a class="reference internal" href="_modules/vartools/parser/enumlexer.html#EnumLexer.t_MACROS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vartools.parser.enumlexer.EnumLexer.t_MACROS" title="Permalink to this definition">¶</a></dt>
+<dd><p>#.*</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vartools.parser.enumlexer.EnumLexer.t_NAMESPACE_SEPARATOR">
+<tt class="descname">t_NAMESPACE_SEPARATOR</tt><em class="property"> = '::'</em><a class="headerlink" href="#vartools.parser.enumlexer.EnumLexer.t_NAMESPACE_SEPARATOR" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="vartools.parser.enumlexer.EnumLexer.t_OPEN_CURLY">
+<tt class="descname">t_OPEN_CURLY</tt><em class="property"> = '{'</em><a class="headerlink" href="#vartools.parser.enumlexer.EnumLexer.t_OPEN_CURLY" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="vartools.parser.enumlexer.EnumLexer.t_OPEN_PAREN">
+<tt class="descname">t_OPEN_PAREN</tt><em class="property"> = '\\('</em><a class="headerlink" href="#vartools.parser.enumlexer.EnumLexer.t_OPEN_PAREN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="vartools.parser.enumlexer.EnumLexer.t_SEMICOLON">
+<tt class="descname">t_SEMICOLON</tt><em class="property"> = ';'</em><a class="headerlink" href="#vartools.parser.enumlexer.EnumLexer.t_SEMICOLON" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vartools.parser.enumlexer.EnumLexer.t_START_MULTILINE_COMMENT">
+<tt class="descname">t_START_MULTILINE_COMMENT</tt><big>(</big><em>token</em><big>)</big><a class="reference internal" href="_modules/vartools/parser/enumlexer.html#EnumLexer.t_START_MULTILINE_COMMENT"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vartools.parser.enumlexer.EnumLexer.t_START_MULTILINE_COMMENT" title="Permalink to this definition">¶</a></dt>
+<dd><p>/*</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vartools.parser.enumlexer.EnumLexer.t_comment_ASTERISK">
+<tt class="descname">t_comment_ASTERISK</tt><big>(</big><em>token</em><big>)</big><a class="reference internal" href="_modules/vartools/parser/enumlexer.html#EnumLexer.t_comment_ASTERISK"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vartools.parser.enumlexer.EnumLexer.t_comment_ASTERISK" title="Permalink to this definition">¶</a></dt>
+<dd><p>*</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vartools.parser.enumlexer.EnumLexer.t_comment_END_MULTILINE_COMMENT">
+<tt class="descname">t_comment_END_MULTILINE_COMMENT</tt><big>(</big><em>token</em><big>)</big><a class="reference internal" href="_modules/vartools/parser/enumlexer.html#EnumLexer.t_comment_END_MULTILINE_COMMENT"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vartools.parser.enumlexer.EnumLexer.t_comment_END_MULTILINE_COMMENT" title="Permalink to this definition">¶</a></dt>
+<dd><p>*/</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vartools.parser.enumlexer.EnumLexer.t_comment_NON_ASTERISK">
+<tt class="descname">t_comment_NON_ASTERISK</tt><big>(</big><em>token</em><big>)</big><a class="reference internal" href="_modules/vartools/parser/enumlexer.html#EnumLexer.t_comment_NON_ASTERISK"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vartools.parser.enumlexer.EnumLexer.t_comment_NON_ASTERISK" title="Permalink to this definition">¶</a></dt>
+<dd><p>[^*]+</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vartools.parser.enumlexer.EnumLexer.test">
+<tt class="descname">test</tt><big>(</big><em>data</em><big>)</big><a class="reference internal" href="_modules/vartools/parser/enumlexer.html#EnumLexer.test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vartools.parser.enumlexer.EnumLexer.test" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="vartools.parser.enumlexer.EnumLexer.tokens">
+<tt class="descname">tokens</tt><em class="property"> = ['MACROS', 'LINE_COMMENT', 'NON_ASTERISK', 'ASTERISK', 'START_MULTILINE_COMMENT', 'END_MULTILINE_COMMENT', 'ASSIGN', 'COMMA', 'SEMICOLON', 'OPEN_CURLY', 'CLOSE_CURLY', 'OPEN_PAREN', 'CLOSE_PAREN', 'NAMESPACE_SEPARATOR', 'ID', 'HEX_INTEGER', 'INTEGER', 'ENUM', 'NAMESPACE']</em><a class="headerlink" href="#vartools.parser.enumlexer.EnumLexer.tokens" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-vartools.parser.enumparser">
+<span id="enumparser-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">enumparser</span></tt> Module<a class="headerlink" href="#module-vartools.parser.enumparser" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="vartools.parser.enumparser.EnumParser">
+<em class="property">class </em><tt class="descclassname">vartools.parser.enumparser.</tt><tt class="descname">EnumParser</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/vartools/parser/enumparser.html#EnumParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vartools.parser.enumparser.EnumParser" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="vartools.parser.enumparser.EnumParser.p_call">
+<tt class="descname">p_call</tt><big>(</big><em>p</em><big>)</big><a class="reference internal" href="_modules/vartools/parser/enumparser.html#EnumParser.p_call"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vartools.parser.enumparser.EnumParser.p_call" title="Permalink to this definition">¶</a></dt>
+<dd><p>call : ID OPEN_PAREN parameter_list CLOSE_PAREN SEMICOLON</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vartools.parser.enumparser.EnumParser.p_enum">
+<tt class="descname">p_enum</tt><big>(</big><em>p</em><big>)</big><a class="reference internal" href="_modules/vartools/parser/enumparser.html#EnumParser.p_enum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vartools.parser.enumparser.EnumParser.p_enum" title="Permalink to this definition">¶</a></dt>
+<dd><p>enum : ENUM ID OPEN_CURLY enum_member_list CLOSE_CURLY SEMICOLON</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vartools.parser.enumparser.EnumParser.p_enum_member">
+<tt class="descname">p_enum_member</tt><big>(</big><em>p</em><big>)</big><a class="reference internal" href="_modules/vartools/parser/enumparser.html#EnumParser.p_enum_member"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vartools.parser.enumparser.EnumParser.p_enum_member" title="Permalink to this definition">¶</a></dt>
+<dd><p>enum_member : ID
+| ID ASSIGN INTEGER</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vartools.parser.enumparser.EnumParser.p_enum_member_list1">
+<tt class="descname">p_enum_member_list1</tt><big>(</big><em>p</em><big>)</big><a class="reference internal" href="_modules/vartools/parser/enumparser.html#EnumParser.p_enum_member_list1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vartools.parser.enumparser.EnumParser.p_enum_member_list1" title="Permalink to this definition">¶</a></dt>
+<dd><p>enum_member_list : enum_member_list COMMA enum_member</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vartools.parser.enumparser.EnumParser.p_enum_member_list2">
+<tt class="descname">p_enum_member_list2</tt><big>(</big><em>p</em><big>)</big><a class="reference internal" href="_modules/vartools/parser/enumparser.html#EnumParser.p_enum_member_list2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vartools.parser.enumparser.EnumParser.p_enum_member_list2" title="Permalink to this definition">¶</a></dt>
+<dd><p>enum_member_list : enum_member</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vartools.parser.enumparser.EnumParser.p_error">
+<tt class="descname">p_error</tt><big>(</big><em>p</em><big>)</big><a class="reference internal" href="_modules/vartools/parser/enumparser.html#EnumParser.p_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vartools.parser.enumparser.EnumParser.p_error" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vartools.parser.enumparser.EnumParser.p_header">
+<tt class="descname">p_header</tt><big>(</big><em>p</em><big>)</big><a class="reference internal" href="_modules/vartools/parser/enumparser.html#EnumParser.p_header"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vartools.parser.enumparser.EnumParser.p_header" title="Permalink to this definition">¶</a></dt>
+<dd><p>header : statement_list</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vartools.parser.enumparser.EnumParser.p_namespace">
+<tt class="descname">p_namespace</tt><big>(</big><em>p</em><big>)</big><a class="reference internal" href="_modules/vartools/parser/enumparser.html#EnumParser.p_namespace"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vartools.parser.enumparser.EnumParser.p_namespace" title="Permalink to this definition">¶</a></dt>
+<dd><p>namespace : NAMESPACE ID OPEN_CURLY statement_list CLOSE_CURLY</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vartools.parser.enumparser.EnumParser.p_parameter">
+<tt class="descname">p_parameter</tt><big>(</big><em>p</em><big>)</big><a class="reference internal" href="_modules/vartools/parser/enumparser.html#EnumParser.p_parameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vartools.parser.enumparser.EnumParser.p_parameter" title="Permalink to this definition">¶</a></dt>
+<dd><p>parameter : ID
+| parameter NAMESPACE_SEPARATOR ID</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vartools.parser.enumparser.EnumParser.p_parameter_list">
+<tt class="descname">p_parameter_list</tt><big>(</big><em>p</em><big>)</big><a class="reference internal" href="_modules/vartools/parser/enumparser.html#EnumParser.p_parameter_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vartools.parser.enumparser.EnumParser.p_parameter_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>parameter_list : parameter_list COMMA parameter
+| parameter</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vartools.parser.enumparser.EnumParser.p_statement_call">
+<tt class="descname">p_statement_call</tt><big>(</big><em>p</em><big>)</big><a class="reference internal" href="_modules/vartools/parser/enumparser.html#EnumParser.p_statement_call"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vartools.parser.enumparser.EnumParser.p_statement_call" title="Permalink to this definition">¶</a></dt>
+<dd><p>statement : call</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vartools.parser.enumparser.EnumParser.p_statement_enum">
+<tt class="descname">p_statement_enum</tt><big>(</big><em>p</em><big>)</big><a class="reference internal" href="_modules/vartools/parser/enumparser.html#EnumParser.p_statement_enum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vartools.parser.enumparser.EnumParser.p_statement_enum" title="Permalink to this definition">¶</a></dt>
+<dd><p>statement : enum</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vartools.parser.enumparser.EnumParser.p_statement_list">
+<tt class="descname">p_statement_list</tt><big>(</big><em>p</em><big>)</big><a class="reference internal" href="_modules/vartools/parser/enumparser.html#EnumParser.p_statement_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vartools.parser.enumparser.EnumParser.p_statement_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>statement_list : statement_list statement
+| statement</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vartools.parser.enumparser.EnumParser.p_statement_namespace">
+<tt class="descname">p_statement_namespace</tt><big>(</big><em>p</em><big>)</big><a class="reference internal" href="_modules/vartools/parser/enumparser.html#EnumParser.p_statement_namespace"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vartools.parser.enumparser.EnumParser.p_statement_namespace" title="Permalink to this definition">¶</a></dt>
+<dd><p>statement : namespace</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vartools.parser.enumparser.EnumParser.parse">
+<tt class="descname">parse</tt><big>(</big><em>data</em><big>)</big><a class="reference internal" href="_modules/vartools/parser/enumparser.html#EnumParser.parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vartools.parser.enumparser.EnumParser.parse" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="vartools.parser.enumparser.EnumParser.tokens">
+<tt class="descname">tokens</tt><em class="property"> = ['MACROS', 'LINE_COMMENT', 'NON_ASTERISK', 'ASTERISK', 'START_MULTILINE_COMMENT', 'END_MULTILINE_COMMENT', 'ASSIGN', 'COMMA', 'SEMICOLON', 'OPEN_CURLY', 'CLOSE_CURLY', 'OPEN_PAREN', 'CLOSE_PAREN', 'NAMESPACE_SEPARATOR', 'ID', 'HEX_INTEGER', 'INTEGER', 'ENUM', 'NAMESPACE']</em><a class="headerlink" href="#vartools.parser.enumparser.EnumParser.tokens" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-vartools.parser.utils">
+<span id="utils-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">utils</span></tt> Module<a class="headerlink" href="#module-vartools.parser.utils" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="vartools.parser.utils.Description">
+<em class="property">class </em><tt class="descclassname">vartools.parser.utils.</tt><tt class="descname">Description</tt><a class="headerlink" href="#vartools.parser.utils.Description" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">tuple</span></tt></p>
+<p>Description(name, comment)</p>
+<dl class="attribute">
+<dt id="vartools.parser.utils.Description.comment">
+<tt class="descname">comment</tt><a class="headerlink" href="#vartools.parser.utils.Description.comment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vartools.parser.utils.Description.name">
+<tt class="descname">name</tt><a class="headerlink" href="#vartools.parser.utils.Description.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="vartools.parser.utils.EnumList">
+<em class="property">class </em><tt class="descclassname">vartools.parser.utils.</tt><tt class="descname">EnumList</tt><a class="headerlink" href="#vartools.parser.utils.EnumList" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">tuple</span></tt></p>
+<p>EnumList(name, comment, members, category)</p>
+<dl class="attribute">
+<dt id="vartools.parser.utils.EnumList.category">
+<tt class="descname">category</tt><a class="headerlink" href="#vartools.parser.utils.EnumList.category" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 3</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vartools.parser.utils.EnumList.comment">
+<tt class="descname">comment</tt><a class="headerlink" href="#vartools.parser.utils.EnumList.comment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vartools.parser.utils.EnumList.members">
+<tt class="descname">members</tt><a class="headerlink" href="#vartools.parser.utils.EnumList.members" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vartools.parser.utils.EnumList.name">
+<tt class="descname">name</tt><a class="headerlink" href="#vartools.parser.utils.EnumList.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="vartools.parser.utils.clean_enums">
+<tt class="descclassname">vartools.parser.utils.</tt><tt class="descname">clean_enums</tt><big>(</big><em>enums</em><big>)</big><a class="reference internal" href="_modules/vartools/parser/utils.html#clean_enums"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vartools.parser.utils.clean_enums" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="vartools.parser.utils.clean_member_names">
+<tt class="descclassname">vartools.parser.utils.</tt><tt class="descname">clean_member_names</tt><big>(</big><em>enum_list</em><big>)</big><a class="reference internal" href="_modules/vartools/parser/utils.html#clean_member_names"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vartools.parser.utils.clean_member_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="vartools.parser.utils.fill_category">
+<tt class="descclassname">vartools.parser.utils.</tt><tt class="descname">fill_category</tt><big>(</big><em>enum_list</em><big>)</big><a class="reference internal" href="_modules/vartools/parser/utils.html#fill_category"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vartools.parser.utils.fill_category" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="vartools.parser.test.html">test Package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="vartools.parser.test.html#module-vartools.parser.test.test_enumparser"><tt class="docutils literal"><span class="pre">test_enumparser</span></tt> Module</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">parser Package</a><ul>
+<li><a class="reference internal" href="#module-vartools.parser.enumlexer"><tt class="docutils literal"><span class="pre">enumlexer</span></tt> Module</a></li>
+<li><a class="reference internal" href="#module-vartools.parser.enumparser"><tt class="docutils literal"><span class="pre">enumparser</span></tt> Module</a></li>
+<li><a class="reference internal" href="#module-vartools.parser.utils"><tt class="docutils literal"><span class="pre">utils</span></tt> Module</a></li>
+<li><a class="reference internal" href="#subpackages">Subpackages</a><ul>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="vartools.html"
+                        title="previous chapter">vartools Package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="vartools.parser.test.html"
+                        title="next chapter">test Package</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/vartools.parser.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="vartools.parser.test.html" title="test Package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="vartools.html" title="vartools Package"
+             >previous</a> |</li>
+        <li><a href="index.html">VarTools 0.1.0 documentation</a> &raquo;</li>
+          <li><a href="modules.html" >VarTools</a> &raquo;</li>
+          <li><a href="vartools.html" >vartools Package</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Alexey Naydenov.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
