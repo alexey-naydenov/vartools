@@ -1,5 +1,7 @@
 /*! \file trace_codes.h 
   
+  \copyright Copyright 2012 CDBAE, Tula, Russia
+  
   \copyright Redistribution and use in source and binary forms, with
   or without modification, are permitted provided that the following
   conditions are met:
@@ -30,6 +32,12 @@
   NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   
+  \author Alexey Naydenov
+  
+  \date 25.10.2012
+  
+  \brief Коды для логов.
+  
 */
 
 #ifndef TRUNK_INCLUDE_TRACER_DETECTOR_TRACE_CODES_H_
@@ -43,14 +51,49 @@ namespace tracer_detector {
 //! Идентификаторы переменных в журнале.
 enum TracerDetectorMessageIds {
   kMessageIdError,
-  kMessageIdInfo
+  kMessageIdInfo,
+  kMessageIdMessage,
+  kMessageIdMessageSize,
+  kMessageIdCompletionCode,
+  kMessageIdHeapFree,
+  kMessageIdHeapLargestFree,
+  kMessageIdMaxStackUsed,
+  kMessageIdTaskId,
+  kMessageIdDistanceCount,
+  kMessageIdMarkerCount,
+  kMessageIdFilterCore,
+  kMessageIdFilterQueue,
+  kMessageIdLookerCore,
+  kMessageIdLookerQueue,
+  kMessageIdDumpValue
 };
 
 //! Идентификаторы нестандартных типов, используемых в журнале.
 enum TracerDetectorTypeIds {
   kTypeIdTracerDetector = 0x20,
   kTypeIdErrorEvents,
-  kTypeIdInfoEvents
+  kTypeIdInfoEvents,
+  kTypeIdMessageEvents
+};
+
+enum MessageEvents {
+  kMessageEventUnspecified,
+  kMessageEventIdleLooker,
+  kMessageEventUpdateTask,
+  kMessageEventUpdateConfig,
+  kMessageEventFindTracers,
+  kMessageEventAddTracers,
+  kMessageEventBecomeFilter,
+  kMessageEventAllDataReceived,
+  kMessageEventProcessMarkers,
+  kMessageEventDebugRequest,
+  kMessageEventDebugTaskResults,
+  kMessageEventFreeDebugBuffer,
+  kMessageEventRawDataBlock,
+  kMessageEventRawDataRequest,
+  kMessageEventForwardRawData,
+  kMessageEventTest,
+  kMessageEventCount
 };
 
 enum ErrorEvents {
@@ -58,13 +101,27 @@ enum ErrorEvents {
   kErrorEventUnknownMessage,
   kErrorEventInvalidDebugRequest,
   kErrorEventDebugSend,
-  kErrorEventInvalidFreeRequest
+  kErrorEventInvalidFreeRequest,
+  kErrorEventDataOutOfOrder
 };
 
 enum InfoEvents {
-  kInfoEventMasterReady,
+  kInfoEventMainTaskReady,
   kInfoEventDebugRequest,
-  kInfoEventFreeDebugBuffer
+  kInfoEventFreeDebugBuffer,
+  kInfoEventUpdateConfig,
+  kInfoEventStartSession,
+  kInfoEventSelectFilter,
+  kInfoEventAllowFiltering,
+  kInfoEventSendSubtask,
+  kInfoEventAddNewTask,
+  kInfoEventCreateNewSession,
+  kInfoEventAddIdleSlave,
+  kInfoEventForwardMarkers,
+  kInfoEventAddDataBlock,
+  kInfoEventFinishProcessing,
+  kInfoEventSendMarkers,
+  kInfoEventStoreTracers
 };
 
 
@@ -76,5 +133,7 @@ REGISTER_VARTRACE_TYPE(cdbae::tracer_detector::ErrorEvents,
                        cdbae::tracer_detector::kTypeIdErrorEvents);
 REGISTER_VARTRACE_TYPE(cdbae::tracer_detector::InfoEvents,
                        cdbae::tracer_detector::kTypeIdInfoEvents);
+REGISTER_VARTRACE_TYPE(cdbae::tracer_detector::MessageEvents,
+                       cdbae::tracer_detector::kTypeIdMessageEvents);
 
 #endif  // TRUNK_INCLUDE_TRACER_DETECTOR_TRACE_CODES_H_

@@ -6,9 +6,10 @@ import ply.yacc as yacc
 from vartools.parser.enumlexer import EnumLexer
 from vartools.parser.utils import EnumList, clean_enums
 
+
 class EnumParser:
     tokens = EnumLexer.tokens
-    
+
     def __init__(self, **kwargs):
         # copy debug option
         self.debug = kwargs.get('debug', False)
@@ -20,7 +21,7 @@ class EnumParser:
     def parse(self, data):
         self.current_enum_index = 0
         return self.parser.parse(data)
-    
+
     def p_error(self, p):
         print("Syntax error at '%s'" % p.value)
 
@@ -49,7 +50,7 @@ class EnumParser:
     def p_statement_call(self, p):
         """statement : call"""
         pass
-        
+
     def p_enum(self, p):
         """enum : ENUM ID OPEN_CURLY enum_member_list CLOSE_CURLY SEMICOLON"""
         p[0] = EnumList(*p[2], members=p[4], category=None)
@@ -89,7 +90,7 @@ class EnumParser:
         """parameter : ID
                      | parameter NAMESPACE_SEPARATOR ID"""
         pass
-        
+
 if __name__ == '__main__':
     import sys
     # check if file name was given
@@ -104,5 +105,3 @@ if __name__ == '__main__':
     for e in clean_enums(parser.parse(code)):
         pprint(e)
     print()
-    
-    

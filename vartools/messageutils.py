@@ -1,8 +1,7 @@
-#!/usr/bin/env python3
+"""VarTrace message parsing utilities."""
 
 import struct
 import logging
-import pdb
 
 
 _DEFAULT_ENDIANESS = '<'
@@ -12,7 +11,7 @@ _NAME_FORMAT_DICT = {'Int8': 'b', 'Uint8': 'B', 'Int16': 'h', 'Uint16': 'H',
                      'Float': 'f', 'Double': 'd'}
 _EVENT_TYPE_SUFFIX = 'Events'
 _EVENT_TYPE_FORMAT = 'I'
-_logger = logging.getLogger(__name__) 
+_logger = logging.getLogger(__name__)
 
 def fill_value(message, type_ids):
     # if type id is not among known types return

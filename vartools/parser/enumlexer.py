@@ -4,18 +4,19 @@ import ply.lex as lex
 
 from vartools.parser.utils import Description
 
+
 class EnumLexer:
     states = (
         ('comment', 'exclusive'),
     )
 
     reserved = {
-        'namespace' : 'NAMESPACE',
-        'enum' : 'ENUM',
+        'namespace': 'NAMESPACE',
+        'enum': 'ENUM',
     }
-    
+
     tokens = [
-        'MACROS', 'LINE_COMMENT', 'NON_ASTERISK', 'ASTERISK', 
+        'MACROS', 'LINE_COMMENT', 'NON_ASTERISK', 'ASTERISK',
         'START_MULTILINE_COMMENT', 'END_MULTILINE_COMMENT',
         'ASSIGN', 'COMMA', 'SEMICOLON', 'OPEN_CURLY', 'CLOSE_CURLY',
         'OPEN_PAREN', 'CLOSE_PAREN', 'NAMESPACE_SEPARATOR',
@@ -50,7 +51,7 @@ class EnumLexer:
         r'[a-zA-Z_][a-zA-Z_0-9]*'
         # change token type if it maches reserved word
         token.type = self.reserved.get(token.value, 'ID')
-        token.value = Description(name=token.value, 
+        token.value = Description(name=token.value,
                                   comment=self.last_line_comment)
         self.last_line_comment = ''
         return token
@@ -85,14 +86,15 @@ class EnumLexer:
     def build(self, **kwargs):
         self.last_line_comment = ''
         self.lexer = lex.lex(module=self, **kwargs)
-    
+
     # print output
     def test(self, data):
         self.lexer.input(data)
         while True:
-             tok = self.lexer.token()
-             if not tok: break
-             print(tok)
+            tok = self.lexer.token()
+            if not tok:
+                break
+            print(tok)
 
 if __name__ == '__main__':
     import sys
