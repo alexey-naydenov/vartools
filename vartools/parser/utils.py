@@ -20,6 +20,7 @@ CATEGORY_MEMBER_PREFIX_DICT = {UNKNOWN_CATEGORY_ID: '',
 Description = namedtuple('Description', 'name comment')
 EnumList = namedtuple('EnumList', 'name comment members category')
 
+
 def fill_category(enum_list):
     result_enum = enum_list._replace(category=UNKNOWN_CATEGORY_ID)
     for category, suffix in CATEGORY_SUFFIX_DICT.items():
@@ -29,6 +30,7 @@ def fill_category(enum_list):
                 category=category)._replace(name=new_name)
             break
     return result_enum
+
 
 def clean_member_names(enum_list):
     prefix = CATEGORY_MEMBER_PREFIX_DICT[enum_list.category].format(
@@ -40,7 +42,7 @@ def clean_member_names(enum_list):
             member_description = member_description._replace(name=cleaned_name)
         cleaned_members[member_id] = member_description
     return enum_list._replace(members=cleaned_members)
-    
+
 
 def clean_enums(enums):
     cleaned_enums = []
@@ -48,4 +50,3 @@ def clean_enums(enums):
         cleaned_enums.append(clean_member_names(fill_category(e)))
 
     return cleaned_enums
-    
