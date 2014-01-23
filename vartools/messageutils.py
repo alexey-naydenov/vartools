@@ -13,6 +13,7 @@ _EVENT_TYPE_SUFFIX = 'Events'
 _EVENT_TYPE_FORMAT = 'I'
 _logger = logging.getLogger(__name__)
 
+
 def fill_value(message, type_ids):
     # if type id is not among known types return
     if not message.type_id in type_ids:
