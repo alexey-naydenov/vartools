@@ -4,7 +4,7 @@ setup(
     name='VarTools',
     version='0.1.0',
     packages=find_packages(),
-    entry_points={'consoel_scripts': [
+    entry_points={'console_scripts': [
         'convert_vartrace = vartools.traceconverter:convert_vartrace']},
     install_requires=['ply'],
     # pypi metadata
