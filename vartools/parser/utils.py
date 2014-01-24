@@ -1,7 +1,6 @@
-#!/usr/bin/env python3
+# pylint: disable=W0212
 
 from collections import namedtuple
-
 
 UNKNOWN_CATEGORY_ID = 0
 MESSAGE_CATEGORY_ID = 1

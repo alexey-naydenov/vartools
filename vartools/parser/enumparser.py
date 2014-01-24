@@ -1,5 +1,3 @@
-#/usr/bin/env python3
-
 from pprint import pprint
 import ply.yacc as yacc
 
@@ -14,8 +12,7 @@ class EnumParser:
         # copy debug option
         self.debug = kwargs.get('debug', False)
         # create lexer
-        self.lexer = EnumLexer()
-        self.lexer.build(debug=self.debug)
+        self.lexer = EnumLexer(debug=self.debug)
         self.parser = yacc.yacc(module=self, debug=self.debug)
 
     def parse(self, data):

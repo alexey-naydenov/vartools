@@ -8,6 +8,10 @@ PAPER         =
 BUILDDIR      = build
 SPHINXAPIDOC = sphinx-apidoc
 
+MKDIR = mkdir
+GIT = git
+REPOSITORY = https://github.com/alexey-naydenov/vartools.git
+
 # Internal variables.
 PAPEROPT_a4     = -D latex_paper_size=a4
 PAPEROPT_letter = -D latex_paper_size=letter
@@ -157,3 +161,8 @@ doctest:
 apidocs:
 	@echo "Building apidocs ..."
 	$(SPHINXAPIDOC) -f -o source -H VarTools ../vartools
+
+.PHONY: gh-pages
+gh-pages:
+	$(MKDIR) -p build/html
+	$(GIT) clone -b gh-pages $(REPOSITORY) build/html
