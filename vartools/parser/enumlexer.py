@@ -24,23 +24,12 @@ class EnumLexer:
 
     """
 
-    def __init__(self):
+    def __init__(self, **kwargs):
         #: Logger to output errors and warnings.
         self._logger = logging.getLogger('EnumLexer')
         #: Store last one line comment to document identifiers.
         self.last_line_comment = None
         #: Actual lexer object.
-        self.lexer = None
-
-    def build(self, **kwargs):
-        """Create actual lexer instance, must be called before using.
-
-        Lexer can not be created in __init__ because it requires an
-        instance (though lexer creation might still work in init,
-        needs testing).
-
-        """
-        self.last_line_comment = None
         self.lexer = lex.lex(module=self, **kwargs)
 
     #: Special lexer name, used by to eliminate multiline comments.
@@ -54,13 +43,11 @@ class EnumLexer:
         'enum': 'ENUM',
     }
 
-    #: Tokens that can be recognized by the lexer.
+    #: Tokens produced by the lexer.
     tokens = [
-        'MACROS', 'LINE_COMMENT', 'NON_ASTERISK', 'ASTERISK',
-        'START_MULTILINE_COMMENT', 'END_MULTILINE_COMMENT',
         'ASSIGN', 'COMMA', 'SEMICOLON', 'OPEN_CURLY', 'CLOSE_CURLY',
         'OPEN_PAREN', 'CLOSE_PAREN', 'NAMESPACE_SEPARATOR',
-        'ID', 'HEX_INTEGER', 'INTEGER',
+        'ID', 'INTEGER',
     ] + list(reserved.values())
 
     t_ANY_ignore = ' \t\n'

@@ -1,4 +1,6 @@
+import logging
 from pprint import pprint
+
 import ply.yacc as yacc
 
 from vartools.parser.enumlexer import EnumLexer
@@ -9,18 +11,20 @@ class EnumParser:
     tokens = EnumLexer.tokens
 
     def __init__(self, **kwargs):
-        # copy debug option
-        self.debug = kwargs.get('debug', False)
-        # create lexer
-        self.lexer = EnumLexer(debug=self.debug)
-        self.parser = yacc.yacc(module=self, debug=self.debug)
+        #: Logger to output errors and warnings.
+        self._logger = logging.getLogger('EnumLexer')
+        is_debug = kwargs.get('debug', False)
+        #: Lexer object.
+        self.lexer = EnumLexer(debug=is_debug)
+        #: Parser object.
+        self.parser = yacc.yacc(module=self, debug=is_debug)
 
     def parse(self, data):
         self.current_enum_index = 0
         return self.parser.parse(data)
 
     def p_error(self, p):
-        print("Syntax error at '%s'" % p.value)
+        self._logger.error('Syntax error at {0}'.format(p.value))
 
     def p_header(self, p):
         """header : statement_list"""
