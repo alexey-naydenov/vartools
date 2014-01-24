@@ -1,3 +1,4 @@
+import logging
 import ply.lex as lex
 
 from vartools.parser.utils import Description
@@ -11,7 +12,7 @@ class EnumLexer:
     will cause error. In particular operators and multiline macros are
     not allowed.
 
-    .. note:: ply uses docstrings to match a regular expression and a token.
+    .. note:: ply uses docstrings to match a regular expression to a token.
 
     .. method:: t_ID(token)
 
@@ -24,6 +25,8 @@ class EnumLexer:
     """
 
     def __init__(self):
+        #: Logger to output errors and warnings.
+        self._logger = logging.getLogger('EnumLexer')
         #: Store last one line comment to document identifiers.
         self.last_line_comment = None
         #: Actual lexer object.
@@ -72,7 +75,7 @@ class EnumLexer:
     t_NAMESPACE_SEPARATOR = r'::'
 
     def t_ANY_error(self, token):
-        print('Illegal character "{}"'.format(token.value[0]))
+        self._logger.error('Illegal character "{}"'.format(token.value[0]))
         self.lexer.skip(1)
 
     def t_MACROS(self, token):
