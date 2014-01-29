@@ -2,9 +2,13 @@
 
 from collections import namedtuple
 
+#: Enum that does not belong to any category.
 UNKNOWN_CATEGORY_ID = 0
+#: Enum with message ids.
 MESSAGE_CATEGORY_ID = 1
+#: Enum list with type ids.
 TYPE_CATEGORY_ID = 2
+#: Enum list with event ids.
 EVENT_CATEGORY_ID = 3
 
 CATEGORY_SUFFIX_DICT = {MESSAGE_CATEGORY_ID: 'MessageIds',
@@ -16,7 +20,17 @@ CATEGORY_MEMBER_PREFIX_DICT = {UNKNOWN_CATEGORY_ID: '',
                                TYPE_CATEGORY_ID: 'kTypeId',
                                EVENT_CATEGORY_ID: 'k{}Event'}
 
+#: Named tuple to store name and comment together.
 Description = namedtuple('Description', 'name comment')
+
+#: Enum members with description and values.
+#: Fields: ``name`` - name of enum structure,
+#: ``comment`` - last one line comment encountered
+#: in the header file before enum definition,
+#: ``members`` - map of enum values to enum member description,
+#: ``category`` - one of possible enum categories:
+#: :const:`UNKNOWN_CATEGORY_ID`, :const:`MESSAGE_CATEGORY_ID`,
+#: :const:`TYPE_CATEGORY_ID`, :const:`EVENT_CATEGORY_ID`
 EnumList = namedtuple('EnumList', 'name comment members category')
 
 

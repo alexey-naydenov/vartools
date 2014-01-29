@@ -30,7 +30,7 @@ class EnumLexer:
         #: Store last one line comment to document identifiers.
         self.last_line_comment = None
         #: Actual lexer object.
-        self.lexer = lex.lex(module=self, **kwargs)
+        self.lexer = lex.lex(module=self, debuglog=self._logger, **kwargs)
 
     #: Special lexer name, used by to eliminate multiline comments.
     states = (
@@ -68,7 +68,7 @@ class EnumLexer:
     def t_MACROS(self, token):
         r'\#.*'
 
-    def t_LINE_COMMENT(self, token):
+    def t_LINE_COMMENT(self, _):
         r'//[\*! ]*(.*)'
         self.last_line_comment = self.lexer.lexmatch.group(3)
 
@@ -94,7 +94,7 @@ class EnumLexer:
         token.value = int(token.value)
         return token
 
-    def t_START_MULTILINE_COMMENT(self, token):
+    def t_START_MULTILINE_COMMENT(self, _):
         r'/\*'
         self.last_line_comment = ''
         self.lexer.push_state('comment')
@@ -102,7 +102,7 @@ class EnumLexer:
     def t_comment_NON_ASTERISK(self, token):
         r'[^\*]+'
 
-    def t_comment_END_MULTILINE_COMMENT(self, token):
+    def t_comment_END_MULTILINE_COMMENT(self, _):
         r'\*/'
         self.lexer.pop_state()
 

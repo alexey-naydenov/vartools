@@ -8,18 +8,33 @@ from vartools.parser.utils import EnumList, clean_enums
 
 
 class EnumParser:
+    """Parser of C++ headers that extracts information from enums.
+
+    :class:`vartools.parser.utils.Description` tuples are created from
+    enum entries and stored in ``members`` dictionary of
+    :class:`vartools.parser.utils.EnumList`.
+
+    """
+
+    #: Tokens imported from lexer.
     tokens = EnumLexer.tokens
 
     def __init__(self, **kwargs):
         #: Logger to output errors and warnings.
-        self._logger = logging.getLogger('EnumLexer')
+        self._logger = logging.getLogger('EnumParser')
         is_debug = kwargs.get('debug', False)
         #: Lexer object.
         self.lexer = EnumLexer(debug=is_debug)
         #: Parser object.
-        self.parser = yacc.yacc(module=self, debug=is_debug)
+        self.parser = yacc.yacc(module=self, debuglog=self._logger)
+        #: Keeps track of index inside enum statement.
+        self.current_enum_index = 0
 
     def parse(self, data):
+        """Parse a string.
+
+        :param str data: C++ header
+        """
         self.current_enum_index = 0
         return self.parser.parse(data)
 
@@ -105,4 +120,4 @@ if __name__ == '__main__':
     print()
     for e in clean_enums(parser.parse(code)):
         pprint(e)
-    print()
+        print()

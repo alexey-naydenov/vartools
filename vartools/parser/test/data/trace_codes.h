@@ -5,6 +5,7 @@
 
 namespace tracer_detector {
 
+//! TracerDetectorMessageIds description
 enum TracerDetectorMessageIds {
   kMessageIdError,
   kMessageIdInfo,
@@ -24,13 +25,14 @@ enum TracerDetectorMessageIds {
   kMessageIdDumpValue
 };
 
+// TracerDetectorTypeIds description
 enum TracerDetectorTypeIds {
   kTypeIdTracerDetector = 0x20,
   kTypeIdErrorEvents,
   kTypeIdInfoEvents,
   kTypeIdMessageEvents
 };
-
+// MessageEvents description
 enum MessageEvents {
   kMessageEventUnspecified,
   kMessageEventIdleLooker,
@@ -50,7 +52,7 @@ enum MessageEvents {
   kMessageEventTest,
   kMessageEventCount
 };
-
+// ErrorEvents description
 enum ErrorEvents {
   kErrorEventMessageQCreate,
   kErrorEventUnknownMessage,
@@ -59,7 +61,7 @@ enum ErrorEvents {
   kErrorEventInvalidFreeRequest,
   kErrorEventDataOutOfOrder
 };
-
+// InfoEvents description
 enum InfoEvents {
   kInfoEventMainTaskReady,
   kInfoEventDebugRequest,
