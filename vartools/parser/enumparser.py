@@ -14,6 +14,27 @@ class EnumParser:
     enum entries and stored in ``members`` dictionary of
     :class:`vartools.parser.utils.EnumList`.
 
+    Production list:
+
+    .. productionlist::
+       header : statement_list
+       statement_list : statement_list statement
+                      : statement
+       statement : namespace
+                 : enum
+                 : call
+       namespace : NAMESPACE ID OPEN_CURLY statement_list CLOSE_CURLY
+       enum : ENUM ID OPEN_CURLY enum_member_list CLOSE_CURLY SEMICOLON
+       enum_member_list : enum_member_list COMMA enum_member
+                        : enum_member
+       enum_member : ID ASSIGN INTEGER
+                   : ID
+       call : ID OPEN_PAREN parameter_list CLOSE_PAREN SEMICOLON
+       parameter_list : parameter_list COMMA parameter
+                      : parameter
+       parameter : parameter NAMESPACE_SEPARATOR ID
+                 : ID
+
     """
 
     #: Tokens imported from lexer.

@@ -58,8 +58,10 @@ def clean_member_names(enum_list):
 
 
 def clean_enums(enums):
-    cleaned_enums = []
-    for e in enums:
-        cleaned_enums.append(clean_member_names(fill_category(e)))
+    """Apply :func:`clean_member_names` and :func:`fill_category` to enums.
 
-    return cleaned_enums
+    :param enums: list of enums to clean.
+    :type enums: list of :class:`EnumList`
+
+    """
+    return [clean_member_names(fill_category(e)) for e in enums]
