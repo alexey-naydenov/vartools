@@ -11,10 +11,12 @@ TYPE_CATEGORY_ID = 2
 #: Enum list with event ids.
 EVENT_CATEGORY_ID = 3
 
+#: Map of enum categories to enum name endings.
 CATEGORY_SUFFIX_DICT = {MESSAGE_CATEGORY_ID: 'MessageIds',
                         TYPE_CATEGORY_ID: 'TypeIds',
                         EVENT_CATEGORY_ID: 'Events'}
 
+#: Enum members prefix templates.
 CATEGORY_MEMBER_PREFIX_DICT = {UNKNOWN_CATEGORY_ID: '',
                                MESSAGE_CATEGORY_ID: 'kMessageId',
                                TYPE_CATEGORY_ID: 'kTypeId',
@@ -35,6 +37,17 @@ EnumList = namedtuple('EnumList', 'name comment members category')
 
 
 def fill_category(enum_list):
+    """Try to figure out enum category from name.
+
+    Using :const:`CATEGORY_SUFFIX_DICT` and enum name ending
+    fill ``category`` field of :class:`EnumList`. The ending is
+    chopped off if category is identified.
+
+    :param enum_list: enum description
+    :type enum_list: :class:`EnumList`
+
+    """
+
     result_enum = enum_list._replace(category=UNKNOWN_CATEGORY_ID)
     for category, suffix in CATEGORY_SUFFIX_DICT.items():
         if enum_list.name.endswith(suffix):
@@ -46,6 +59,16 @@ def fill_category(enum_list):
 
 
 def clean_member_names(enum_list):
+    """Remove repeating prefixes from enum members.
+
+    If entries of an categorized enum start with the category
+    specific suffix then remove it.
+
+    :param enum_list: enum description
+    :type enum_list: :class:`EnumList`
+
+    """
+
     prefix = CATEGORY_MEMBER_PREFIX_DICT[enum_list.category].format(
         enum_list.name)
     cleaned_members = {}
@@ -64,4 +87,5 @@ def clean_enums(enums):
     :type enums: list of :class:`EnumList`
 
     """
+
     return [clean_member_names(fill_category(e)) for e in enums]
