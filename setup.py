@@ -6,7 +6,7 @@ setup(
     packages=find_packages(),
     entry_points={'console_scripts': [
         'convert_vartrace = vartools.traceconverter:convert_vartrace']},
-    install_requires=['ply'],
+    install_requires=['ply', 'future'],
     # pypi metadata
     author='Alexey Naydenov',
     author_email='alexey.naydenov@linux.com',

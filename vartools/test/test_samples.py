@@ -7,7 +7,8 @@ DATA_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data')
 
 
 def check_empty(trace):
-    print('ok')
+    entries = [e for e in trace]
+    assert(len(entries) == 0)
 
 
 TEST_FUNCTION_FILE = [(check_empty, 'empty.bin')]
