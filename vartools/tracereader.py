@@ -4,6 +4,7 @@ from collections import namedtuple
 
 from future.utils import implements_iterator
 
+#: Set little endian as default.
 _DEFAULT_ENDIANESS = '<'
 _HEADER_STRUCTURE = [('timestamp', 'I'), ('size', 'H'),
                      ('message_id', 'B'), ('type_id', 'B')]
@@ -16,7 +17,14 @@ TraceMessage = namedtuple(
 
 @implements_iterator
 class TraceReader:
+    """Iterate over trace messages from given stream."""
+
     def __init__(self, stream, endianess=None):
+        """Create object that spits out trace messages.
+
+        :param io.RawIOBase stream: data source,
+        :param str endianess: endianess string (see :mod:`struct`).
+        """
         self._logger = logging.getLogger('TraceReader')
         self._stream = stream
         endianess = endianess if endianess else _DEFAULT_ENDIANESS
@@ -29,6 +37,10 @@ class TraceReader:
         return self
 
     def _read_header(self):
+        """Parse header and store in a dictionary.
+
+        :return: dictionary with header fields.
+        """
         log_entry = {}
         for field_name, field_format, field_size in self._header_structure:
             field_data = self._stream.read(field_size)
@@ -41,18 +53,27 @@ class TraceReader:
         return log_entry
 
     def _read_data(self, log_entry):
+        """Read data from stream and add as a string to the dictionary.
+
+        :param dict log_entry: dictionary with filled header fields.
+        :return: dictionary with filled header, data and empty value fields.
+        """
         log_entry['data'] = self._stream.read(log_entry['size'])
         if len(log_entry['data']) < log_entry['size']:
             self._logger.error('Data read failed: got {0} expected {1}'.format(
                 len(log_entry['data']), log_entry['size']))
             raise StopIteration
+        log_entry['value'] = None
         return log_entry
 
     def __next__(self):
+        """Return next top level log entry.
+
+        Iteration stops if no data can be read.
+        """
         log_entry = self._read_header()
         log_entry = self._read_data(log_entry)
         if log_entry['size'] % _ALIGNMENT_SIZE != 0:
             remainder = log_entry['size'] % _ALIGNMENT_SIZE
             self._stream.read(_ALIGNMENT_SIZE - remainder)
-        log_entry['value'] = None
         return TraceMessage(**log_entry)
