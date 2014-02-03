@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import logging
 import struct
 from collections import namedtuple
@@ -14,8 +12,8 @@ _DATA_FIELD_NAME = 'data'
 _VALUE_FIELD_NAME = 'value'
 _ALIGNMENT_SIZE = 4
 
-TraceMessage = namedtuple('TraceMessage', 
-                          ' '.join(_HEADER_NAMES 
+TraceMessage = namedtuple('TraceMessage',
+                          ' '.join(_HEADER_NAMES
                                    + [_DATA_FIELD_NAME, _VALUE_FIELD_NAME]))
 
 class TraceReader:

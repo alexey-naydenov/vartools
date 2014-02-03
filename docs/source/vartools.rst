@@ -1,14 +1,6 @@
 vartools Package
 ================
 
-:mod:`fileutils` Module
------------------------
-
-.. automodule:: vartools.fileutils
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 :mod:`messageutils` Module
 --------------------------
 
