@@ -10,6 +10,7 @@ _HEADER_STRUCTURE = [('timestamp', 'I'), ('size', 'H'),
                      ('message_id', 'B'), ('type_id', 'B')]
 _ALIGNMENT_SIZE = 4
 
+#: Namedtuple to store header information, raw data and value
 TraceMessage = namedtuple(
     'TraceMessage', ' '.join([n for n, f in _HEADER_STRUCTURE]
                              + ['data', 'value']))

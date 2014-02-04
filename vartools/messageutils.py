@@ -1,10 +1,11 @@
 """VarTrace message parsing utilities."""
 
+# pylint: disable=W0212
+
 import struct
 import logging
 
-
-_DEFAULT_ENDIANESS = '<'
+import vartools.common as vtc
 
 _NAME_FORMAT_DICT = {'Int8': 'b', 'Uint8': 'B', 'Int16': 'h', 'Uint16': 'H',
                      'Int32': 'i', 'Uint32': 'I', 'Int64': 'q', 'Uint64': 'Q',
@@ -12,6 +13,36 @@ _NAME_FORMAT_DICT = {'Int8': 'b', 'Uint8': 'B', 'Int16': 'h', 'Uint16': 'H',
 _EVENT_TYPE_SUFFIX = 'Events'
 _EVENT_TYPE_FORMAT = 'I'
 _logger = logging.getLogger(__name__)
+
+
+def fill_pod_value(message, is_little=True):
+    """Interpret data that corresponds to POD types.
+
+    Fill value field of message based on data and type_id.
+
+    :param message: message with empty value field.
+    :type message: :class:`~vartools.tracereader.TraceMessage`
+    :param bool is_little: encoding of data, little or big endian.
+    """
+    type_to_description = (vtc.TYPE_ID_FORMAT_DICT_LE if is_little
+                           else vtc.TYPE_ID_FORMAT_DICT_BE)
+    if message.type_id in type_to_description:
+        struct_object = type_to_description[message.type_id]
+    else:
+        return message
+    if message.size < struct_object.size:
+        _logger.error('Data size {0} is smaller then POD size {1}'.format(
+            message.size, struct_object.size))
+        return message
+    if message.size % struct_object.size != 0:
+        _logger.error('Data size {0} is not divisible by POD size {1}'.format(
+            message.size, struct_object.size))
+    if message.size == type_to_description.size:
+        value = struct_object.unpack(message.data)[0]
+    else:
+        value = [struct_object.unpack_from(message.data, offset)[0]
+                 for offset in range(0, message.size, struct_object.size)]
+    return message._replace(value=value)
 
 
 def fill_value(message, type_ids):
@@ -31,6 +62,7 @@ def fill_value(message, type_ids):
                               message.data)[0]
         message = message._replace(value=value)
     return message
+
 
 def data_to_text(data):
     byte_list = []

@@ -1,6 +1,14 @@
 vartools Package
 ================
 
+:mod:`common` Module
+--------------------
+
+.. automodule:: vartools.common
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`messageutils` Module
 --------------------------
 
@@ -31,4 +39,5 @@ Subpackages
 .. toctree::
 
     vartools.parser
+    vartools.test
 
