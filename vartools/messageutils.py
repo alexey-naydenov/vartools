@@ -37,7 +37,7 @@ def fill_pod_value(message, is_little=True):
     if message.size % struct_object.size != 0:
         _logger.error('Data size {0} is not divisible by POD size {1}'.format(
             message.size, struct_object.size))
-    if message.size == type_to_description.size:
+    if message.size == struct_object.size:
         value = struct_object.unpack(message.data)[0]
     else:
         value = [struct_object.unpack_from(message.data, offset)[0]

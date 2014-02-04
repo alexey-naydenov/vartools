@@ -2,6 +2,7 @@
 
 import os
 import vartools.tracereader as vttr
+import vartools.messageutils as vtmu
 
 #: Location of test data.
 DATA_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data')
@@ -15,7 +16,10 @@ def check_empty(trace):
 
 def check_integer_count(trace):
     """Check trace that contains int count from 0 to 999."""
-    
+    index = None
+    for index, message in enumerate((vtmu.fill_pod_value(m) for m in trace)):
+        assert message.value == index
+    assert index == 999
 
 
 TEST_FUNCTION_FILE = [(check_empty, 'empty.bin'),
