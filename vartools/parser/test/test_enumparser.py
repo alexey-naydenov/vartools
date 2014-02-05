@@ -30,8 +30,8 @@ def test_tracer_detector_log():
 
 def test_tracer_detector_conversion():
     """Check conversion of tracer detector log."""
-    log = print
-    #log = lambda x: x
+    test_print = print
+    test_print = lambda x: x
     message_id_dict, type_id_dict = vtpu.parse_headers(
         [os.path.join(_DATA_PATH, 'trace_codes.h')], event_format='<i')
     #message_id_dict, type_id_dict = vtpu.parse_headers([])
@@ -51,4 +51,19 @@ def test_tracer_detector_conversion():
             value_desc = vtmu.get_value_description(message, type_id_dict)
             if value_desc:
                 message_value = value_desc.name
-            log(message_name, message_value)
+            test_print(message_name)
+            test_print(message_value)
+
+
+def test_message_to_text():
+    """Check conversion of tracer detector log to text."""
+    test_print = print
+    #test_print = lambda x: x
+    message_id_dict, type_id_dict = vtpu.parse_headers(
+        [os.path.join(_DATA_PATH, 'trace_codes.h')], event_format='<i')
+    #message_id_dict, type_id_dict = vtpu.parse_headers([])
+    with open(os.path.join(_DATA_PATH, 'trace.bin'), 'rb') as trace_file:
+        trace = vttr.TraceReader(trace_file)
+        for message in trace:
+            test_print(vtmu.message_to_text(message, message_id_dict,
+                                            type_id_dict))
