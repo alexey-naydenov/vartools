@@ -2,7 +2,6 @@
 
 import os
 import struct
-import unittest as ut
 
 import vartools.tracereader as vttr
 import vartools.messageutils as vtmu

@@ -1,10 +1,10 @@
 import logging
-from pprint import pprint
 
 import ply.yacc as yacc
+from future.builtins import dict
 
 from vartools.parser.enumlexer import EnumLexer
-from vartools.parser.utils import EnumList, clean_enums
+import vartools.common as vtc
 
 
 class EnumParser:
@@ -90,7 +90,7 @@ class EnumParser:
 
     def p_enum(self, p):
         """enum : ENUM ID OPEN_CURLY enum_member_list CLOSE_CURLY SEMICOLON"""
-        p[0] = EnumList(*p[2], members=p[4], category=None)
+        p[0] = vtc.EnumList(*p[2], members=p[4], category=None)
         self.current_enum_index = 0
 
     def p_enum_member_list1(self, p):
@@ -107,7 +107,7 @@ class EnumParser:
                        | ID ASSIGN INTEGER"""
         if len(p) > 2:
             self.current_enum_index = p[3]
-        p[0] = {self.current_enum_index: p[1]}
+        p[0] = dict({self.current_enum_index: p[1]})
         self.current_enum_index += 1
 
     def p_namespace(self, p):
@@ -127,18 +127,3 @@ class EnumParser:
         """parameter : ID
                      | parameter NAMESPACE_SEPARATOR ID"""
         pass
-
-if __name__ == '__main__':
-    import sys
-    # check if file name was given
-    if len(sys.argv) != 2:
-        print("Must provide filename")
-        sys.exit()
-    parser = EnumParser(debug=True)
-    # read test code
-    code = open(sys.argv[1], 'r').read()
-    # print result
-    print()
-    for e in clean_enums(parser.parse(code)):
-        pprint(e)
-        print()

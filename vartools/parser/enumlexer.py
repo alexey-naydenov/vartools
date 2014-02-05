@@ -1,7 +1,7 @@
 import logging
 import ply.lex as lex
 
-from vartools.parser.utils import Description
+import vartools.common as vtc
 
 
 class EnumLexer:
@@ -79,7 +79,7 @@ class EnumLexer:
         else:
             token.type = 'ID'
             comment = self.last_line_comment if self.last_line_comment else ''
-            token.value = Description(name=token.value, comment=comment)
+            token.value = vtc.Description(name=token.value, comment=comment)
             self.last_line_comment = None
         return token
 

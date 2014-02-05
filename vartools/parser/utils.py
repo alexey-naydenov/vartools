@@ -1,6 +1,9 @@
 # pylint: disable=W0212
 
-from collections import namedtuple
+import logging
+from future.builtins import dict
+
+import vartools.common as vtc
 
 #: Enum that does not belong to any category.
 UNKNOWN_CATEGORY_ID = 0
@@ -22,18 +25,7 @@ CATEGORY_MEMBER_PREFIX_DICT = {UNKNOWN_CATEGORY_ID: '',
                                TYPE_CATEGORY_ID: 'kTypeId',
                                EVENT_CATEGORY_ID: 'k{}Event'}
 
-#: Named tuple to store name and comment together.
-Description = namedtuple('Description', 'name comment')
-
-#: Enum members with description and values.
-#: Fields: ``name`` - name of enum structure,
-#: ``comment`` - last one line comment encountered
-#: in the header file before enum definition,
-#: ``members`` - map of enum values to enum member description,
-#: ``category`` - one of possible enum categories:
-#: :const:`UNKNOWN_CATEGORY_ID`, :const:`MESSAGE_CATEGORY_ID`,
-#: :const:`TYPE_CATEGORY_ID`, :const:`EVENT_CATEGORY_ID`
-EnumList = namedtuple('EnumList', 'name comment members category')
+_logger = logging.getLogger(__name__)
 
 
 def fill_category(enum_list):
@@ -89,3 +81,61 @@ def clean_enums(enums):
     """
 
     return [clean_member_names(fill_category(e)) for e in enums]
+
+
+def create_message_id_dict(enums):
+    """Extract message ids from enums and store in a dictionary.
+
+    :param enums: list of enums processed by :func:`clean_enums`
+    :type enums: list of :class:`EnumList`
+    """
+
+    id_dict = dict()
+    for enum in enums:
+        if enum.category != MESSAGE_CATEGORY_ID:
+            continue
+        overlapping_keys = enum.members.keys() & id_dict.keys()
+        if overlapping_keys:
+            _logger.error('Overlapping keys: {0}'.format(
+                ', '.join(overlapping_keys)))
+        id_dict.update(enum.members)
+    return id_dict
+
+
+def create_type_id_dict(enums):
+    """Create dictionary with type id descriptions.
+
+    It is assumed that some types contain event codes. This function
+    looks for enums that correspond to event codes and create
+    dictionary that maps ``type_id`` to these event codes. It assumes
+    that if there is a type with the name ``SomethingEvents`` then
+    enum with name ``Something`` contains event codes.
+
+    :param enums: list of enums processed by :func:`clean_enums`
+    :type enums: list of :class:`EnumList`
+
+    """
+    # construct type dict
+    type_dict = dict()
+    for e in enums:
+        if e.category != TYPE_CATEGORY_ID:
+            continue
+        overlapping_keys = e.members.keys() & type_dict.keys()
+        if overlapping_keys:
+            _logger.error('Overlapping keys: {0}'.format(
+                ', '.join(overlapping_keys)))
+        for type_id, desc in e.members.items():
+            type_desc = vtc.TypeDescription(
+                name=desc.name, comment=desc.comment,
+                codes=dict(), struct_object=None)
+            type_dict[type_id] = type_desc
+    # fill codes
+    for e in enums:
+        if e.category != EVENT_CATEGORY_ID:
+            continue
+        type_name = e.name + CATEGORY_SUFFIX_DICT[EVENT_CATEGORY_ID]
+        for type_id, type_desc in type_dict.items():
+            if type_name != type_desc.name:
+                continue
+            type_desc.codes.update(e.members)
+    return type_dict
