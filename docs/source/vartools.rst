@@ -17,6 +17,14 @@ vartools Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`parserutils` Module
+-------------------------
+
+.. automodule:: vartools.parserutils
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`traceconverter` Module
 ----------------------------
 

@@ -1,9 +1,11 @@
 # pylint: disable=W0212
 
 import logging
+import struct
 from future.builtins import dict
 
 import vartools.common as vtc
+import vartools.parser.enumparser as vtep
 
 #: Enum that does not belong to any category.
 UNKNOWN_CATEGORY_ID = 0
@@ -102,7 +104,7 @@ def create_message_id_dict(enums):
     return id_dict
 
 
-def create_type_id_dict(enums):
+def create_type_id_dict(enums, event_format=None):
     """Create dictionary with type id descriptions.
 
     It is assumed that some types contain event codes. This function
@@ -113,6 +115,7 @@ def create_type_id_dict(enums):
 
     :param enums: list of enums processed by :func:`clean_enums`
     :type enums: list of :class:`EnumList`
+    :param str event_format: ``struct`` format string to parse event codes
 
     """
     # construct type dict
@@ -125,9 +128,13 @@ def create_type_id_dict(enums):
             _logger.error('Overlapping keys: {0}'.format(
                 ', '.join(overlapping_keys)))
         for type_id, desc in e.members.items():
+            struct_object = None
+            if event_format and desc.name.endswith(
+                    CATEGORY_SUFFIX_DICT[EVENT_CATEGORY_ID]):
+                struct_object = struct.Struct(event_format)
             type_desc = vtc.TypeDescription(
                 name=desc.name, comment=desc.comment,
-                codes=dict(), struct_object=None)
+                codes=dict(), struct_object=struct_object)
             type_dict[type_id] = type_desc
     # fill codes
     for e in enums:
@@ -139,3 +146,21 @@ def create_type_id_dict(enums):
                 continue
             type_desc.codes.update(e.members)
     return type_dict
+
+
+def parse_headers(headers, **kwargs):
+    """Parse headers and return message_id and type_id dictionaries.
+
+    :param headers: list of paths to headers
+    :type headers: str list
+    :return: message_id and type_id dictionaries
+    :rtype: (dict, dict)
+    """
+    parser = vtep.EnumParser()
+    enum_lists = []
+    for header in headers:
+        header_code = open(header).read()
+        enum_lists.extend(clean_enums(parser.parse(header_code)))
+    message_dict = create_message_id_dict(enum_lists)
+    type_dict = create_type_id_dict(enum_lists, **kwargs)
+    return message_dict, type_dict

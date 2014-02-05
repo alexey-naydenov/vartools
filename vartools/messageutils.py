@@ -15,20 +15,9 @@ _EVENT_TYPE_FORMAT = 'I'
 _logger = logging.getLogger(__name__)
 
 
-def fill_pod_value(message, is_little=True):
-    """Interpret data that corresponds to POD types.
-
-    Fill value field of message based on data and type_id.
-
-    :param message: message with empty value field.
-    :type message: :class:`~vartools.tracereader.TraceMessage`
-    :param bool is_little: encoding of data, little or big endian.
-    """
-    type_to_description = (vtc.TYPE_ID_FORMAT_DICT_LE if is_little
-                           else vtc.TYPE_ID_FORMAT_DICT_BE)
-    if message.type_id in type_to_description:
-        struct_object = type_to_description[message.type_id]
-    else:
+def _unpack_with(message, struct_object):
+    """Unpack message data using unpacker object."""
+    if not struct_object:
         return message
     if message.size < struct_object.size:
         _logger.error('Data size {0} is smaller then POD size {1}'.format(
@@ -43,6 +32,40 @@ def fill_pod_value(message, is_little=True):
         value = [struct_object.unpack_from(message.data, offset)[0]
                  for offset in range(0, message.size, struct_object.size)]
     return message._replace(value=value)
+
+
+def fill_pod_value(message, is_little=True):
+    """Interpret data that corresponds to POD types.
+
+    Fill value field of message based on data and type_id.
+
+    :param message: message with empty value field.
+    :type message: :class:`~vartools.tracereader.TraceMessage`
+    :param bool is_little: encoding of data, little or big endian.
+    """
+    type_to_description = (vtc.TYPE_ID_FORMAT_DICT_LE if is_little
+                           else vtc.TYPE_ID_FORMAT_DICT_BE)
+    if message.type_id in type_to_description:
+        struct_object = type_to_description[message.type_id]
+        return _unpack_with(message, struct_object)
+    else:
+        return message
+
+
+def fill_custom_value(message, type_id_dict):
+    """Unpack value using struct object stored in type dictionary."""
+    if message.type_id in type_id_dict:
+        struct_object = type_id_dict[message.type_id].struct_object
+        return _unpack_with(message, struct_object)
+    return message
+
+
+def get_value_description(message, type_id_dict):
+    """Return value meaning or None."""
+    if message.type_id in type_id_dict \
+       and message.value in type_id_dict[message.type_id].codes:
+        return type_id_dict[message.type_id].codes[message.value]
+    return None
 
 
 def fill_value(message, type_ids):
@@ -67,7 +90,7 @@ def fill_value(message, type_ids):
 def data_to_text(data):
     byte_list = []
     for b in data:
-        byte_list.append('0x{:02x}'.format(b))
+        byte_list.append('{:02x}'.format(ord(b)))
     return ' '.join(byte_list)
 
 def message_to_text(message, message_ids, type_ids, event_ids):
