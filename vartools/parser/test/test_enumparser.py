@@ -2,6 +2,7 @@
 
 from __future__ import print_function
 import os
+import tables
 
 import vartools.parser.enumparser as vtep
 import vartools.parser.utils as vtpu
@@ -72,13 +73,22 @@ def test_message_to_text():
 def test_collate_values():
     """Manually check collate values fucntions."""
     test_print = print
-    test_print = lambda x: x
+    #test_print = lambda x: x
     _, type_id_dict = vtpu.parse_headers(
         [os.path.join(_DATA_PATH, 'trace_codes.h')], event_format='<i')
     #message_id_dict, type_id_dict = vtpu.parse_headers([])
     with open(os.path.join(_DATA_PATH, 'trace.bin'), 'rb') as trace_file:
         trace = vttr.TraceReader(trace_file)
         id_values_dict = vtmu.collate_values(
-            vtmu.fill_custom_value(vtmu.fill_pod_value(m), type_id_dict)
-            for m in trace)
+            (vtmu.fill_custom_value(vtmu.fill_pod_value(m), type_id_dict)
+             for m in trace), lambda x: x*1e-9)
         test_print(id_values_dict)
+
+
+def test_hdf5_export():
+    """Create hdf5 file in tmp dir out of trace file."""
+
+    h5file = tables.open_file('/tmp/vartools_test.h5', mode='w',
+                              title='VarTools test file')
+
+    h5file.close()

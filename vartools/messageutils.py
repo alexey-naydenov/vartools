@@ -2,6 +2,7 @@
 
 # pylint: disable=W0212
 
+from future.builtins import dict
 import struct
 import logging
 from collections import defaultdict
@@ -101,7 +102,7 @@ def message_to_text(message, message_id_dict, type_id_dict):
                                        message_value)
 
 
-def collate_values(messages):
+def collate_values(messages, timestamp_to_time=None):
     """Collate messages values using message id.
 
     If value is None then it is skipped. Message ids are mapped to
@@ -109,70 +110,23 @@ def collate_values(messages):
 
     :param messages: an iterable that produce messages
     :type messages: :class:`~vartools.common.TraceMessage` list
-    :return: map of messaged ids to lists of tuples
-    :rtype: dict
+    :return: two maps of message ids to lists of tuples and to type id
+    :rtype: (dict, dict)
 
     """
+    timestamp_to_time = timestamp_to_time if timestamp_to_time else lambda x: x
     collated_values = defaultdict(list)
+    message_type_dict = dict()
     for message in messages:
         if message.value:
             collated_values[message.message_id].append(
-                (message.timestamp, message.value))
-    return collated_values
-
-
-def _data_to_value(message, type_ids, event_ids):
-    # if type id is not among known types return
-    if not message.type_id in type_ids:
-        _logger.debug('Uknown type id: {}'.format(message.type_id))
-        return data_to_text(message.data)
-    # if type one of the standard types use struct to interpret
-    type_name = type_ids[message.type_id].name
-    if type_name in _NAME_FORMAT_DICT:
-        value = struct.unpack(_DEFAULT_ENDIANESS + _NAME_FORMAT_DICT[type_name],
-                              message.data)[0]
-    # if type name follows event format read it as uint
-    if type_name.endswith(_EVENT_TYPE_SUFFIX):
-        value = struct.unpack(_DEFAULT_ENDIANESS + _EVENT_TYPE_FORMAT,
-                              message.data)[0]
-    # check if type is an event, convert to readable string then
-    if message.type_id in type_ids \
-            and type_ids[message.type_id].name.endswith(_EVENT_TYPE_SUFFIX):
-        type_name = type_ids[message.type_id].name
-        # replace event id with a string
-        for event_list in event_ids:
-            if type_name == event_list.name + _EVENT_TYPE_SUFFIX:
-                if value in event_list.members:
-                    value = event_list.members[value].name
-                break
-    return value
-
-def message_to_dict(message, message_ids, type_ids, event_ids):
-    result = {}
-    result['timestamp'] = message.timestamp
-    result['value'] = _data_to_value(message, type_ids, event_ids)
-    result['message_id'] = message.message_id
-    if message.message_id in message_ids:
-        result['message'] = message_ids[message.message_id].name
-    else: 
-        result['message'] = message.message_id
-    result['type_id'] = message.type_id
-    if message.type_id in type_ids:
-        result['type'] = type_ids[message.type_id].name
-    else:
-        result['type'] = message.type_id
-    return result
-
-def dict_to_clojure_map(dict_):
-    terms = []
-    for k, v in dict_.items():
-        terms.append(':' + k)
-        terms.append(str(v))
-    return '{' + ' '.join(terms) + '}'
-
-def message_to_clojure(message, message_ids, type_ids, event_ids):
-    return dict_to_clojure_map(message_to_dict(
-            message, message_ids, type_ids, event_ids))
-
-if __name__ == '__main__':
-    pass
+                (timestamp_to_time(message.timestamp), message.value))
+        if message.message_id in message_type_dict:
+            if message.type_id != message_type_dict[message.message_id]:
+                _logger.error(
+                    'Different type ids correspond to the one message '
+                    'id'.format(message.type_id,
+                                message_type_dict[message.message_id]))
+        else:
+            message_type_dict[message.message_id] = message.type_id
+    return collated_values, message_type_dict
