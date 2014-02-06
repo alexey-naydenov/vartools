@@ -8,6 +8,7 @@ import vartools.parser.enumparser as vtep
 import vartools.parser.utils as vtpu
 import vartools.tracereader as vttr
 import vartools.messageutils as vtmu
+import vartools.hdf5 as vthdf5
 
 #: Location of parser's test data.
 _DATA_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data')
@@ -73,7 +74,7 @@ def test_message_to_text():
 def test_collate_values():
     """Manually check collate values fucntions."""
     test_print = print
-    #test_print = lambda x: x
+    test_print = lambda x: x
     _, type_id_dict = vtpu.parse_headers(
         [os.path.join(_DATA_PATH, 'trace_codes.h')], event_format='<i')
     #message_id_dict, type_id_dict = vtpu.parse_headers([])
@@ -87,8 +88,16 @@ def test_collate_values():
 
 def test_hdf5_export():
     """Create hdf5 file in tmp dir out of trace file."""
-
+    message_desc_dict, type_desc_dict = vtpu.parse_headers(
+        [os.path.join(_DATA_PATH, 'trace_codes.h')], event_format='<i')
+    with open(os.path.join(_DATA_PATH, 'trace.bin'), 'rb') as trace_file:
+        trace = vttr.TraceReader(trace_file)
+        id_values_dict, message_type_dict = vtmu.collate_values(
+            (vtmu.fill_custom_value(vtmu.fill_pod_value(m), type_desc_dict)
+             for m in trace))
     h5file = tables.open_file('/tmp/vartools_test.h5', mode='w',
                               title='VarTools test file')
-
+    trace_group = h5file.create_group('/', 'trace', 'Trace export test')
+    vthdf5.export(h5file, trace_group, id_values_dict, message_type_dict,
+                  message_desc_dict, type_desc_dict)
     h5file.close()
