@@ -4,16 +4,7 @@ from collections import namedtuple
 
 from future.utils import implements_iterator
 
-#: Set little endian as default.
-_DEFAULT_ENDIANESS = '<'
-_HEADER_STRUCTURE = [('timestamp', 'I'), ('size', 'H'),
-                     ('message_id', 'B'), ('type_id', 'B')]
-_ALIGNMENT_SIZE = 4
-
-#: Namedtuple to store header information, raw data and value
-TraceMessage = namedtuple(
-    'TraceMessage', ' '.join([n for n, f in _HEADER_STRUCTURE]
-                             + ['data', 'value']))
+import vartools.common as vtc
 
 
 @implements_iterator
@@ -28,10 +19,10 @@ class TraceReader:
         """
         self._logger = logging.getLogger('TraceReader')
         self._stream = stream
-        endianess = endianess if endianess else _DEFAULT_ENDIANESS
+        endianess = endianess if endianess else vtc.DEFAULT_ENDIANESS
         self._header_structure = [
             (name, endianess + field_format, struct.calcsize(field_format))
-            for name, field_format in _HEADER_STRUCTURE]
+            for name, field_format in vtc.HEADER_STRUCTURE]
         self._subheader_structure = self._header_structure[1:]
 
     def __iter__(self):
@@ -74,7 +65,7 @@ class TraceReader:
         """
         log_entry = self._read_header()
         log_entry = self._read_data(log_entry)
-        if log_entry['size'] % _ALIGNMENT_SIZE != 0:
-            remainder = log_entry['size'] % _ALIGNMENT_SIZE
-            self._stream.read(_ALIGNMENT_SIZE - remainder)
-        return TraceMessage(**log_entry)
+        if log_entry['size'] % vtc.ALIGNMENT_SIZE != 0:
+            remainder = log_entry['size'] % vtc.ALIGNMENT_SIZE
+            self._stream.read(vtc.ALIGNMENT_SIZE - remainder)
+        return vtc.TraceMessage(**log_entry)

@@ -35,3 +35,14 @@ Description = namedtuple('Description', 'name comment')
 #: Named tuple with type descriptions
 TypeDescription = namedtuple('TypeDescription',
                              Description._fields + ('codes', 'struct_object'))
+
+#: Set little endian as default.
+DEFAULT_ENDIANESS = '<'
+HEADER_STRUCTURE = [('timestamp', 'I'), ('size', 'H'),
+                    ('message_id', 'B'), ('type_id', 'B')]
+ALIGNMENT_SIZE = 4
+
+#: Namedtuple to store header information, raw data and value
+TraceMessage = namedtuple(
+    'TraceMessage', ' '.join([n for n, f in HEADER_STRUCTURE]
+                             + ['data', 'value']))
