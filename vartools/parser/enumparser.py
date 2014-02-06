@@ -1,28 +1,66 @@
-#/usr/bin/env python3
+import logging
 
-from pprint import pprint
 import ply.yacc as yacc
+from future.builtins import dict
 
 from vartools.parser.enumlexer import EnumLexer
-from vartools.parser.utils import EnumList, clean_enums
+import vartools.common as vtc
+
 
 class EnumParser:
+    """Parser of C++ headers that extracts information from enums.
+
+    :class:`vartools.parser.utils.Description` tuples are created from
+    enum entries and stored in ``members`` dictionary of
+    :class:`vartools.parser.utils.EnumList`.
+
+    Production list:
+
+    .. productionlist::
+       header : statement_list
+       statement_list : statement_list statement
+                      : statement
+       statement : namespace
+                 : enum
+                 : call
+       namespace : NAMESPACE ID OPEN_CURLY statement_list CLOSE_CURLY
+       enum : ENUM ID OPEN_CURLY enum_member_list CLOSE_CURLY SEMICOLON
+       enum_member_list : enum_member_list COMMA enum_member
+                        : enum_member
+       enum_member : ID ASSIGN INTEGER
+                   : ID
+       call : ID OPEN_PAREN parameter_list CLOSE_PAREN SEMICOLON
+       parameter_list : parameter_list COMMA parameter
+                      : parameter
+       parameter : parameter NAMESPACE_SEPARATOR ID
+                 : ID
+
+    """
+
+    #: Tokens imported from lexer.
     tokens = EnumLexer.tokens
-    
+
     def __init__(self, **kwargs):
-        # copy debug option
-        self.debug = kwargs.get('debug', False)
-        # create lexer
-        self.lexer = EnumLexer()
-        self.lexer.build(debug=self.debug)
-        self.parser = yacc.yacc(module=self, debug=self.debug)
+        #: Logger to output errors and warnings.
+        self._logger = logging.getLogger('EnumParser')
+        is_debug = kwargs.get('debug', False)
+        #: Lexer object.
+        self.lexer = EnumLexer(debug=is_debug)
+        #: Parser object.
+        self.parser = yacc.yacc(module=self, debuglog=self._logger)
+        #: Keeps track of index inside enum statement.
+        self.current_enum_index = 0
 
     def parse(self, data):
+        """Parse a string.
+
+        :param str data: C++ header
+        """
         self.current_enum_index = 0
         return self.parser.parse(data)
-    
+
     def p_error(self, p):
-        print("Syntax error at '%s'" % p.value)
+        self._logger.error('Syntax error at {0}'.format(p.value))
 
     def p_header(self, p):
         """header : statement_list"""
@@ -49,10 +87,10 @@ class EnumParser:
     def p_statement_call(self, p):
         """statement : call"""
         pass
-        
+
     def p_enum(self, p):
         """enum : ENUM ID OPEN_CURLY enum_member_list CLOSE_CURLY SEMICOLON"""
-        p[0] = EnumList(*p[2], members=p[4], category=None)
+        p[0] = vtc.EnumList(*p[2], members=p[4], category=None)
         self.current_enum_index = 0
 
     def p_enum_member_list1(self, p):
@@ -69,7 +107,7 @@ class EnumParser:
                        | ID ASSIGN INTEGER"""
         if len(p) > 2:
             self.current_enum_index = p[3]
-        p[0] = {self.current_enum_index: p[1]}
+        p[0] = dict({self.current_enum_index: p[1]})
         self.current_enum_index += 1
 
     def p_namespace(self, p):
@@ -89,20 +127,3 @@ class EnumParser:
         """parameter : ID
                      | parameter NAMESPACE_SEPARATOR ID"""
         pass
-        
-if __name__ == '__main__':
-    import sys
-    # check if file name was given
-    if len(sys.argv) != 2:
-        print("Must provide filename")
-        sys.exit()
-    parser = EnumParser(debug=True)
-    # read test code
-    code = open(sys.argv[1], 'r').read()
-    # print result
-    print()
-    for e in clean_enums(parser.parse(code)):
-        pprint(e)
-    print()
-    
-    

@@ -1,65 +1,70 @@
-#!/usr/bin/env python3
-
 import logging
 import struct
-from collections import namedtuple
-from itertools import repeat
-from operator import add
 
-_DEFAULT_ENDIANESS = '<'
-_SIZE_FIELD_NAME = 'size'
-_HEADER_NAMES = ['timestamp', _SIZE_FIELD_NAME, 'message_id', 'type_id']
-_HEADER_TYPES = ['I', 'H', 'B', 'B']
-_DATA_FIELD_NAME = 'data'
-_VALUE_FIELD_NAME = 'value'
-_ALIGNMENT_SIZE = 4
+from future.utils import implements_iterator
 
-TraceMessage = namedtuple('TraceMessage', 
-                          ' '.join(_HEADER_NAMES 
-                                   + [_DATA_FIELD_NAME, _VALUE_FIELD_NAME]))
+import vartools.common as vtc
 
+
+@implements_iterator
 class TraceReader:
-    def __init__(self, stream):
+    """Iterate over trace messages from given stream."""
+
+    def __init__(self, stream, endianess=None):
+        """Create object that spits out trace messages.
+
+        :param io.RawIOBase stream: data source,
+        :param str endianess: endianess string (see :mod:`struct`).
+        """
         self._logger = logging.getLogger('TraceReader')
         self._stream = stream
-        # prepend all struct types with endianess character
-        self._header_types = list(map(add, repeat(_DEFAULT_ENDIANESS), 
-                                      _HEADER_TYPES))
-        self._header_names = _HEADER_NAMES
+        endianess = endianess if endianess else vtc.DEFAULT_ENDIANESS
+        self._header_structure = [
+            (name, endianess + field_format, struct.calcsize(field_format))
+            for name, field_format in vtc.HEADER_STRUCTURE]
+        self._subheader_structure = self._header_structure[1:]
 
     def __iter__(self):
         return self
 
-    def __next__(self):
-        message = {}
-        for field_name, field_type in zip(self._header_names,
-                                          self._header_types):
-            buffer = self._stream.read(struct.calcsize(field_type))
-            if len(buffer) == 0:
-                if field_name != self._header_names[0]:
-                    self._logger.warn(
+    def _read_header(self):
+        """Parse header and store in a dictionary.
+
+        :return: dictionary with header fields.
+        """
+        log_entry = {}
+        for field_name, field_format, field_size in self._header_structure:
+            field_data = self._stream.read(field_size)
+            if not field_data:
+                if field_name != self._header_structure[0][0]:
+                    self._logger.error(
                         'Reading stopped on field: {}'.format(field_name))
                 raise StopIteration
-            message[field_name] = struct.unpack(field_type, buffer)[0]
-        message[_DATA_FIELD_NAME] = self._stream.read(message[_SIZE_FIELD_NAME])
-        # align next read
-        if message[_SIZE_FIELD_NAME]%_ALIGNMENT_SIZE != 0:
-            remainder = message[_SIZE_FIELD_NAME]%_ALIGNMENT_SIZE
-            self._stream.read(_ALIGNMENT_SIZE - remainder)
-        message[_VALUE_FIELD_NAME] = None
-        return TraceMessage(**message)
+            log_entry[field_name] = struct.unpack(field_format, field_data)[0]
+        return log_entry
 
-if __name__ == '__main__':
-    import sys
-    # check if file name was given
-    if len(sys.argv) != 2:
-        print("Must provide filename")
-        sys.exit()
-    # set log level
-    logging.basicConfig(level=logging.INFO)
-    # open file
-    with open(sys.argv[1], 'rb') as trace_file:
-        for message in TraceReader(trace_file):
-            if len(message) == 0:
-                break
-            print(message)
+    def _read_data(self, log_entry):
+        """Read data from stream and add as a string to the dictionary.
+
+        :param dict log_entry: dictionary with filled header fields.
+        :return: dictionary with filled header, data and empty value fields.
+        """
+        log_entry['data'] = self._stream.read(log_entry['size'])
+        if len(log_entry['data']) < log_entry['size']:
+            self._logger.error('Data read failed: got {0} expected {1}'.format(
+                len(log_entry['data']), log_entry['size']))
+            raise StopIteration
+        log_entry['value'] = None
+        return log_entry
+
+    def __next__(self):
+        """Return next top level log entry.
+
+        Iteration stops if no data can be read.
+        """
+        log_entry = self._read_header()
+        log_entry = self._read_data(log_entry)
+        if log_entry['size'] % vtc.ALIGNMENT_SIZE != 0:
+            remainder = log_entry['size'] % vtc.ALIGNMENT_SIZE
+            self._stream.read(vtc.ALIGNMENT_SIZE - remainder)
+        return vtc.TraceMessage(**log_entry)
