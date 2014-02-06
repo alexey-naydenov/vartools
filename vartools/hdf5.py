@@ -1,7 +1,7 @@
 """Utilities for exporting into hdf5."""
 
 import logging
-import numpy as np
+import functools
 import tables
 
 import vartools.common as vtc
@@ -33,8 +33,13 @@ def _get_col_type(type_id, type_desc_dict):
     if not type_desc_dict[type_id]:
         _logger.error('No format for type id {}'.format(type_id))
         return None
-    type_format = type_desc_dict[type_id].struct_object.format[1]
-    return _FORMAT_COL_DICT[type_format]
+    if not type_desc_dict[type_id].codes:
+        type_format = type_desc_dict[type_id].struct_object.format[1]
+        return _FORMAT_COL_DICT[type_format]
+    enum_dict = {v.name: k for k, v in type_desc_dict[type_id].codes.items()}
+    enum_default = min(enum_dict, key=enum_dict.get)
+    return functools.partial(tables.EnumCol, enum_dict, enum_default,
+                             vtc.DEFAULT_ENUM_BASE)
 
 
 def export(hdf5file, group, values, message_type_dict,

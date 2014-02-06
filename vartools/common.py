@@ -5,6 +5,8 @@
 import struct
 from collections import namedtuple
 
+DEFAULT_ENUM_BASE = 'int32'
+
 #: Map PODs onto struct module format character.
 TYPE_ID_FORMAT_DICT = {1: 'b', 2: 'B', 3: 'h', 4: 'H',
                        5: 'i', 6: 'I', 7: 'q', 8: 'Q',
