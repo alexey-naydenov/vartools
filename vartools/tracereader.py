@@ -1,6 +1,5 @@
 import logging
 import struct
-from collections import namedtuple
 
 from future.utils import implements_iterator
 

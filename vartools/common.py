@@ -18,7 +18,6 @@ TYPE_ID_FORMAT_DICT_LE = {i: struct.Struct('<' + f)
 TYPE_ID_FORMAT_DICT_BE = {i: struct.Struct('>' + f)
                           for i, f in TYPE_ID_FORMAT_DICT.items()}
 
-
 #: Enum members with description and values.
 #: Fields: ``name`` - name of enum structure,
 #: ``comment`` - last one line comment encountered

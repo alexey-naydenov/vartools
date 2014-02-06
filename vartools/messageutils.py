@@ -4,6 +4,7 @@
 
 import struct
 import logging
+from collections import defaultdict
 
 import vartools.common as vtc
 
@@ -100,8 +101,25 @@ def message_to_text(message, message_id_dict, type_id_dict):
                                        message_value)
 
 
-def collate_messages(message_iterable):
-    """Collate messages by  """
+def collate_values(messages):
+    """Collate messages values using message id.
+
+    If value is None then it is skipped. Message ids are mapped to
+    list of tuples of the form ``(timestamp, value)``.
+
+    :param messages: an iterable that produce messages
+    :type messages: :class:`~vartools.common.TraceMessage` list
+    :return: map of messaged ids to lists of tuples
+    :rtype: dict
+
+    """
+    collated_values = defaultdict(list)
+    for message in messages:
+        if message.value:
+            collated_values[message.message_id].append(
+                (message.timestamp, message.value))
+    return collated_values
+
 
 def _data_to_value(message, type_ids, event_ids):
     # if type id is not among known types return

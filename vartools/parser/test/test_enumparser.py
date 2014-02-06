@@ -58,7 +58,7 @@ def test_tracer_detector_conversion():
 def test_message_to_text():
     """Check conversion of tracer detector log to text."""
     test_print = print
-    #test_print = lambda x: x
+    test_print = lambda x: x
     message_id_dict, type_id_dict = vtpu.parse_headers(
         [os.path.join(_DATA_PATH, 'trace_codes.h')], event_format='<i')
     #message_id_dict, type_id_dict = vtpu.parse_headers([])
@@ -67,3 +67,18 @@ def test_message_to_text():
         for message in trace:
             test_print(vtmu.message_to_text(message, message_id_dict,
                                             type_id_dict))
+
+
+def test_collate_values():
+    """Manually check collate values fucntions."""
+    test_print = print
+    test_print = lambda x: x
+    _, type_id_dict = vtpu.parse_headers(
+        [os.path.join(_DATA_PATH, 'trace_codes.h')], event_format='<i')
+    #message_id_dict, type_id_dict = vtpu.parse_headers([])
+    with open(os.path.join(_DATA_PATH, 'trace.bin'), 'rb') as trace_file:
+        trace = vttr.TraceReader(trace_file)
+        id_values_dict = vtmu.collate_values(
+            vtmu.fill_custom_value(vtmu.fill_pod_value(m), type_id_dict)
+            for m in trace)
+        test_print(id_values_dict)
