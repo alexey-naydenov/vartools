@@ -72,4 +72,9 @@ def export(hdf5file, group, values, message_type_dict,
         data_table = hdf5file.create_table(
             group, message_desc_dict[message_id].name, table_format,
             message_desc_dict[message_id].comment)
-        data_table.append(values_list)
+        for time, value in values_list:
+            row = data_table.row
+            row['time'] = time
+            row['value'] = value
+            row.append()
+        data_table.flush()
