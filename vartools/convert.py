@@ -13,7 +13,7 @@ _DEFAULT_EVENT_FORMAT = '<i'
 
 
 def to_hdf5(h5file, group, trace_file, comment=None, headers=None,
-            event_format=None):
+            event_format=None, timestamp_to_time=None):
     """Read trace file and store data into hdf5 format.
 
     :param group: list of strings with path to the trace group
@@ -29,7 +29,7 @@ def to_hdf5(h5file, group, trace_file, comment=None, headers=None,
     trace = vttr.TraceReader(trace_file)
     id_values_dict, message_type_dict = vtmu.collate_values(
         (vtmu.fill_custom_value(vtmu.fill_pod_value(m), type_desc_dict)
-         for m in trace))
+         for m in trace), timestamp_to_time)
     parent_group = '/' + '/'.join(group[:-1])
     trace_group = h5file.create_group(parent_group, group[-1], title=comment,
                                       createparents=True)
