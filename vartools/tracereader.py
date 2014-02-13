@@ -41,8 +41,6 @@ class TraceReader:
                         'Reading stopped on field: {}'.format(field_name))
                 raise StopIteration
             log_entry[field_name] = struct.unpack(field_format, field_data)[0]
-        if log_entry['timestamp'] < 0:
-            print('bad')
         return log_entry
 
     def _read_data(self, log_entry):
