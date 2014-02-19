@@ -33,6 +33,6 @@ def to_hdf5(h5file, group, trace_file, comment=None, headers=None,
     parent_group = '/' + '/'.join(group[:-1])
     trace_group = h5file.create_group(parent_group, group[-1], title=comment,
                                       createparents=True)
-    trace_group._v_attrs.date = datetime.now().isoformat()
+    trace_group._v_attrs.date = datetime.now().strftime('%c')
     vthdf5.export(h5file, trace_group, id_values_dict, message_type_dict,
                   message_desc_dict, type_desc_dict)
